@@ -4,6 +4,7 @@ const {StringDecoder} = require('node:string_decoder');
 const routes = require('../routes');
 const {notFoundHandler} = require('../Handlers/RouteHandlers/notFoundHandler');
 const environment = require('./enviornment');
+const {validJSON} = require('../Helpers/utilities');
 
 //scaffolding
 const handle = {};
@@ -32,11 +33,13 @@ handle.handleReqRes = (req,res)=>{
     });
     req.on('end',()=>{
         reqBody += decoder.end();
+        requestProperty.body = validJSON(reqBody);
         choosenHandler(requestProperty,(statusCode,payload)=>{
             //checking for the status code and the payload
             statusCode = typeof(statusCode) === 'number' ? statusCode : 500;
             payload = typeof(payload) === 'object' ? JSON.stringify(payload) : {};
             //sending response
+            res.setHeader('Content-Type','application/json');
             res.writeHead(statusCode);
             res.end(payload);
         });
