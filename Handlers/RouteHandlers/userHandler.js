@@ -145,7 +145,32 @@ handler._user.put = (requestProperty,callback)=>{
 };
 
 handler._user.delete = (requestProperty,callback)=>{
-
+    const urlParams = new URLSearchParams(requestProperty.queryStringObj);
+    let phone = urlParams.get('phone').trim();
+    phone = typeof(phone)==='string' && phone.length === 11
+            ? phone : false;
+    if(phone){
+        fileWork.read('users',phone,(err1,d)=>{
+            const userData = { ...utilities.validJSON(d)};
+            if(!err1 && userData){
+                fileWork.delete('users',phone,(err2)=>{
+                    if(!err2){
+                        callback(200,{message:"user delete Successfull!",});
+                    }else{
+                        callback(500,{message:"something went wrong",});
+                    }
+                });
+            }else{
+                callback(404,{
+                    error:'user not found!',
+                });
+            }
+        });
+    }else{
+        callback(404,{
+            error: "invalid phone number",
+        });
+    }
 };
 
 
