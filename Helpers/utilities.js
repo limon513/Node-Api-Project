@@ -23,10 +23,10 @@ utilities.hashString = (inputString)=>{
 };
 
 //generating unique tokens
-utilities.generateToken = ()=>{
+utilities.generateToken = (size)=>{
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*_+';
     let token = '';
-    for(let i=1; i<=30; i++){
+    for(let i=1; i<=size; i++){
         token+=chars.charAt(Math.floor(Math.random()*chars.length));
     }
     return token;

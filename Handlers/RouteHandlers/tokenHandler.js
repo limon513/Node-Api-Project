@@ -1,6 +1,7 @@
 //dependencies
 const fileWork = require('../../Lib/data');
 const utilities = require('../../Helpers/utilities');
+const {tokenLength} = require('../../Helpers/enviornment')
 //scaffolding
 const handler = {};
 //making user handler
@@ -33,7 +34,7 @@ handler._token.post = (requestProperty,callback)=>{
                 if(hashPass === utilities.validJSON(u).password){
                     const tokenObj = {
                         phone : phone,
-                        tokenId : utilities.generateToken(),
+                        tokenId : utilities.generateToken(tokenLength),
                         expires : Date.now()+60*60*1000,
                     };
                     fileWork.create('tokens',tokenObj.tokenId,tokenObj,(err2)=>{
@@ -57,7 +58,7 @@ handler._token.get = (requestProperty,callback)=>{
     const urlQObj = new URLSearchParams(requestProperty.queryStringObj);
     let tid = urlQObj.get('tid').trim();
     //token id validation
-    tid = typeof(tid) === 'string' && tid.length === 30 ?
+    tid = typeof(tid) === 'string' && tid.length === tokenLength ?
         tid : false;
     if(tid){
         fileWork.read('tokens',tid,(err1,td)=>{
@@ -75,7 +76,7 @@ handler._token.get = (requestProperty,callback)=>{
 
 handler._token.put = (requestProperty,callback)=>{
     const tokenId = typeof(requestProperty.body.tokenId) === 'string' && 
-                    requestProperty.body.tokenId.trim().length === 30 ?
+                    requestProperty.body.tokenId.trim().length === tokenLength ?
                     requestProperty.body.tokenId.trim() : false;
     const toExtend = typeof(requestProperty.body.toExtend) === 'boolean'?
                     requestProperty.body.toExtend : false;
@@ -104,7 +105,7 @@ handler._token.put = (requestProperty,callback)=>{
 handler._token.delete = (requestProperty,callback)=>{
     const urlParams = new URLSearchParams(requestProperty.queryStringObj);
     let token = urlParams.get('tid').trim();
-    token = typeof(token)==='string' && token.length === 30
+    token = typeof(token)==='string' && token.length === tokenLength
             ? token : false;
     if(token){
         fileWork.read('tokens',token,(err1,td)=>{
@@ -132,7 +133,7 @@ handler._token.delete = (requestProperty,callback)=>{
 
 handler._token.tokenMatch = (phone,token,callback)=>{
     //validate token
-    const validtoken = typeof(token)==='string' && token.trim().length===30 ?
+    const validtoken = typeof(token)==='string' && token.trim().length===tokenLength ?
                         token.trim() : false;
     if(validtoken){
         fileWork.read('tokens',validtoken,(err1,td)=>{

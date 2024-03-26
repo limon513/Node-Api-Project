@@ -8,6 +8,10 @@ environment.staging = {
     baseUrl:`http://localhost:${""+3000}`,
     envName: 'staging',
     secretKey: 'staging',
+    timeoutLimit : 5,
+    tokenLength : 30,
+    checkIdLength : 20,
+    maxcheckLength : 5,
 };
 
 environment.production = {
@@ -15,6 +19,10 @@ environment.production = {
     baseUrl:`http://localhost:${""+5000}`,
     envName: 'production',
     secretKey: 'production',
+    timeoutLimit : 5,
+    tokenLength : 30,
+    checkIdLength : 20,
+    maxcheckLength : 5,
 };
 
 const selectedEnvironment = typeof(process.env.NODE_ENV)==='string'?
