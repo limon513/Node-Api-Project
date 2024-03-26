@@ -1,6 +1,7 @@
 //dependencies
 const fileWork = require('../../Lib/data');
 const utilities = require('../../Helpers/utilities');
+const tokenHandler = require('./tokenHandler');
 //scaffolding
 const handler = {};
 //making user handler
@@ -80,15 +81,22 @@ handler._user.get = (requestProperty,callback)=>{
     phone = typeof(phone)==='string' && phone.length === 11
             ? phone : false;
     if(phone){
-        fileWork.read('users',phone,(err1,d)=>{
-            const userData = { ...utilities.validJSON(d)};
-            if(!err1 && userData){
-                delete userData.password;
-                callback(200,userData);
-            }else{
-                callback(404,{
-                    error:'user not found!',
+        tokenHandler._token.tokenMatch(phone,requestProperty.headersObj.token,(match)=>{
+            if(match){
+                fileWork.read('users',phone,(err1,d)=>{
+                    const userData = { ...utilities.validJSON(d)};
+                    if(!err1 && userData){
+                        delete userData.password;
+                        callback(200,userData);
+                    }else{
+                        callback(404,{
+                            error:'user not found!',
+                        });
+                    }
                 });
+            }
+            else{
+                callback(403, {error:"please login first!"});
             }
         });
     }else{
@@ -116,25 +124,32 @@ handler._user.put = (requestProperty,callback)=>{
                         requestProperty.body.password.trim().length > 0 ?
                         requestProperty.body.password : false;
     if(phone){
-        fileWork.read('users',phone,(err1,d)=>{
-            if(!err1 && d){
-                const userData = {...utilities.validJSON(d)};
-                if(firstName)   userData.firstName = firstName;
-                if(lastName)    userData.lastName = lastName;
-                if(password)    userData.password = utilities.hashString(password);
-                //update to the file
-                fileWork.update('users',phone,userData,(err2)=>{
-                    if(!err2) callback(200,{
-                        message: "User updated successfully",
-                    });
-                    else callback(500,{
-                        error:"something went wrong",
-                    });
+        tokenHandler._token.tokenMatch(phone,requestProperty.headersObj.token,(match)=>{
+            if(match){
+                fileWork.read('users',phone,(err1,d)=>{
+                    if(!err1 && d){
+                        const userData = {...utilities.validJSON(d)};
+                        if(firstName)   userData.firstName = firstName;
+                        if(lastName)    userData.lastName = lastName;
+                        if(password)    userData.password = utilities.hashString(password);
+                        //update to the file
+                        fileWork.update('users',phone,userData,(err2)=>{
+                            if(!err2) callback(200,{
+                                message: "User updated successfully",
+                            });
+                            else callback(500,{
+                                error:"something went wrong",
+                            });
+                        });
+                    }else{
+                        callback(400,{
+                            error:'user not found!',
+                        });
+                    }
                 });
-            }else{
-                callback(400,{
-                    error:'user not found!',
-                });
+            }
+            else{
+                callback(403, {error:"please login first!"});
             }
         });
     }else{
@@ -150,20 +165,28 @@ handler._user.delete = (requestProperty,callback)=>{
     phone = typeof(phone)==='string' && phone.length === 11
             ? phone : false;
     if(phone){
-        fileWork.read('users',phone,(err1,d)=>{
-            const userData = { ...utilities.validJSON(d)};
-            if(!err1 && userData){
-                fileWork.delete('users',phone,(err2)=>{
-                    if(!err2){
-                        callback(200,{message:"user delete Successfull!",});
+        tokenHandler._token.tokenMatch(phone,requestProperty.headersObj.token,(match)=>{
+            if(match){
+                fileWork.read('users',phone,(err1,d)=>{
+                    const userData = { ...utilities.validJSON(d)};
+                    if(!err1 && userData){
+                        fileWork.delete('users',phone,(err2)=>{
+                            if(!err2){
+                                fileWork.delete('tokens',requestProperty.headersObj.token);
+                                callback(200,{message:"user delete Successfull!",});
+                            }else{
+                                callback(500,{message:"something went wrong",});
+                            }
+                        });
                     }else{
-                        callback(500,{message:"something went wrong",});
+                        callback(404,{
+                            error:'user not found!',
+                        });
                     }
                 });
-            }else{
-                callback(404,{
-                    error:'user not found!',
-                });
+            }
+            else{
+                callback(403, {error:"please login first!"});
             }
         });
     }else{

@@ -22,5 +22,16 @@ utilities.hashString = (inputString)=>{
     return hash;
 };
 
-//
+//generating unique tokens
+utilities.generateToken = ()=>{
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*_+';
+    let token = '';
+    for(let i=1; i<=30; i++){
+        token+=chars.charAt(Math.floor(Math.random()*chars.length));
+    }
+    return token;
+};
+
+
+
 module.exports = utilities;
