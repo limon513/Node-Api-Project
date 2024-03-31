@@ -13,8 +13,8 @@ environment.staging = {
     checkIdLength : 20,
     maxcheckLength : 5,
     twilio:{
-        accountSid:'AC70af61024d40a2c1451034b828793b1f',
-        authToken:'0813aa8ac776949d24c40a31c14c4bb0',
+        accountSid:'',
+        authToken:'',
         from:'+12567332246',
     },
 };
@@ -29,8 +29,8 @@ environment.production = {
     checkIdLength : 20,
     maxcheckLength : 5,
     twilio:{
-        accountSid:'AC70af61024d40a2c1451034b828793b1f',
-        authToken:'0813aa8ac776949d24c40a31c14c4bb0',
+        accountSid:'',
+        authToken:'',
         from:'+12567332246',
     },
 };
