@@ -67,8 +67,8 @@ lib.update = (dir, filename, data, callback)=>{
 //function to delete file
 lib.delete = (dir, filename, callback)=>{
     fs.unlink(`${lib.baseDir+dir}/${filename}.json`,(err)=>{
-        if(err) callback(err);
-        else callback(false);
+        if(err) callback(false);
+        else callback(true);
     });
 };
 

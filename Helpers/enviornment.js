@@ -12,6 +12,11 @@ environment.staging = {
     tokenLength : 30,
     checkIdLength : 20,
     maxcheckLength : 5,
+    twilio:{
+        accountSid:'AC70af61024d40a2c1451034b828793b1f',
+        authToken:'0813aa8ac776949d24c40a31c14c4bb0',
+        from:'+12567332246',
+    },
 };
 
 environment.production = {
@@ -23,6 +28,11 @@ environment.production = {
     tokenLength : 30,
     checkIdLength : 20,
     maxcheckLength : 5,
+    twilio:{
+        accountSid:'AC70af61024d40a2c1451034b828793b1f',
+        authToken:'0813aa8ac776949d24c40a31c14c4bb0',
+        from:'+12567332246',
+    },
 };
 
 const selectedEnvironment = typeof(process.env.NODE_ENV)==='string'?
