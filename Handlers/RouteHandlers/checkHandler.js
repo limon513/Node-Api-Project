@@ -39,22 +39,24 @@ handler._check.post = (requestProperty, callback) => {
         Math.floor(requestProperty.body.timeout) <= timeoutLimit ?
         requestProperty.body.timeout : false;
 
-    if (protocol && url && method && successcode && timeout) {
-        const checkObj = {
-            id: utilities.generateToken(checkIdLength),
-            protocol,
-            url,
-            method,
-            successcode,
-            timeout,
-        };
-        const token = typeof (requestProperty.headersObj.token) === 'string' &&
+    const token = typeof (requestProperty.headersObj.token) === 'string' &&
             requestProperty.headersObj.token.trim().length === tokenLength ?
             requestProperty.headersObj.token.trim() : false;
+
+    if (protocol && url && method && successcode && timeout) {
 
         if (token) {
             fileWork.read('tokens', token, (err1, td) => {
                 const tokenObj = utilities.validJSON(td);
+                const checkObj = {
+                    id: utilities.generateToken(checkIdLength),
+                    protocol,
+                    url,
+                    method,
+                    successcode,
+                    timeout,
+                    userPhone:tokenObj.phone,
+                };
                 if (!err1 && tokenObj && tokenObj.expires > Date.now()) {
                     fileWork.read('users', tokenObj.phone, (err2, ud) => {
                         const userData = { ...utilities.validJSON(ud) };

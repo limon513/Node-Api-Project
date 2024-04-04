@@ -72,4 +72,19 @@ lib.delete = (dir, filename, callback)=>{
     });
 };
 
+//function to get all items from directory in a list;
+lib.listDirItem = (dir,callback)=>{
+    fs.readdir(`${lib.baseDir+dir}/`,(err,files)=>{
+        if(!err && files && files.length > 0){
+            const checklist = [];
+            for(let i=0; i<files.length; i++){
+                checklist.push(files[i].replace('.json',''));
+            }
+            callback(false,checklist);
+        }else{
+            callback("zero items found to check!");
+        }
+    });
+};
+
 module.exports = lib;
